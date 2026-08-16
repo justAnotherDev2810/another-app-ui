@@ -1,0 +1,49 @@
+<mat-toolbar class="border-b border-slate-200 bg-white px-4 flex justify-between items-center h-16 sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+        <button mat-icon-button (click)="toggleSidebar.emit()" aria-label="Toggle navigation drawer">
+            <mat-icon class="text-slate-700">menu</mat-icon>
+        </button>
+        <div class="flex items-center gap-2.5">
+            <!-- Cyan Brand Accent -->
+            <div
+                class="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                UI
+            </div>
+            <span class="font-semibold text-lg text-slate-800 tracking-tight">Enterprise Console</span>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+        <button mat-icon-button matTooltip="Notifications">
+            <!-- Orange Notification Dot Accent -->
+            <mat-icon class="text-slate-600">notifications</mat-icon>
+        </button>
+
+        <button mat-button [matMenuTriggerFor]="userMenu" class="!py-1 !px-2 rounded-full hover:bg-slate-100">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-medium text-xs">
+                    JD
+                </div>
+                <span class="text-sm font-medium text-slate-700 hidden sm:inline">John Doe</span>
+                <mat-icon class="text-slate-500">expand_more</mat-icon>
+            </div>
+        </button>
+
+        <mat-menu #userMenu="matMenu" xPosition="before">
+            <button mat-menu-item>
+                <mat-icon class="!text-cyan-600">person</mat-icon>
+                <span>Profile Settings</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon class="!text-cyan-600">security</mat-icon>
+                <span>Security</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="!text-red-600">
+                <mat-icon class="!text-red-600">logout</mat-icon>
+                <span>Sign Out</span>
+            </button>
+        </mat-menu>
+    </div>
+</mat-toolbar>

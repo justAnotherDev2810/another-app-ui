@@ -1,0 +1,24 @@
+<nav class="h-full bg-slate-900 text-slate-200 w-64 flex flex-col justify-between p-4">
+    <div class="space-y-4">
+        <div class="px-3 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+            Main Menu
+        </div>
+
+        <mat-nav-list class="!pt-0 space-y-1">
+            @for (item of navItems; track item.route) {
+            <a mat-list-item [routerLink]="item.route" routerLinkActive="active-link"
+                class="rounded-lg transition-colors my-1 hover:bg-slate-800">
+                <mat-icon matListItemIcon class="!text-slate-400">{{ item.icon }}</mat-icon>
+                <span matListItemTitle class="font-medium text-sm">{{ item.label }}</span>
+            </a>
+            }
+        </mat-nav-list>
+    </div>
+
+    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60">
+        <div class="text-xs text-slate-400 font-medium">Environment</div>
+        <div class="text-xs text-orange-400 font-semibold flex items-center gap-1.5 mt-1">
+            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> Production v1.0.0
+        </div>
+    </div>
+</nav>

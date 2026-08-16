@@ -1,0 +1,11 @@
+:host {
+    display: block;
+    height: 100vh;
+}
+
+// Remove Material 3 default rounded drawer corners
+::ng-deep .mat-drawer {
+    border-radius: 0 !important;
+    border-right: 1px solid #334155 !important;
+    /* slate-700 */
+}
