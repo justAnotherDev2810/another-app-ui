@@ -1,0 +1,13 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.active-link {
+    background-color: rgba(79, 70, 229, 0.15) !important;
+    color: #818cf8 !important;
+
+    mat-icon {
+        color: #818cf8 !important;
+    }
+}
