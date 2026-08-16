@@ -3,11 +3,24 @@
     height: 100%;
 }
 
+// Override Angular Material MDC list typography variables for dark backgrounds
+mat-nav-list span {
+    color: #cbd5e1 !important;
+}
+
+mat-nav-list span:hover {
+    color: #ffffff !important;
+}
+
+// Cyan-Orange Theme Active State
 .active-link {
-    background-color: rgba(79, 70, 229, 0.15) !important;
-    color: #818cf8 !important;
+    background-color: rgba(6, 182, 212, 0.15) !important;
+    /* Cyan tint */
+    --mdc-list-list-item-label-text-color: #22d3ee !important;
+    /* Cyan-400 */
 
     mat-icon {
-        color: #818cf8 !important;
+        color: #22d3ee !important;
+        /* Cyan-400 */
     }
 }
