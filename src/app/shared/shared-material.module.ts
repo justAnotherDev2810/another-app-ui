@@ -6,6 +6,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
 
 const MATERIAL_MODULES = [
     MatToolbarModule,
@@ -14,7 +15,8 @@ const MATERIAL_MODULES = [
     MatSidenavModule,
     MatListModule,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTableModule
 ];
 
 @NgModule({

@@ -1,13 +1,27 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SharedMaterialModule } from '../../shared/shared-material.module';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
-    selector: 'app-users',
-    standalone: true,
-    template: `
-    <div class="p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-      <h1 class="text-2xl font-bold text-slate-800">Users Directory</h1>
-      <p class="text-slate-500 mt-1">User CRUD operations will be built here in Phase 3.</p>
-    </div>
-  `
+  selector: 'app-users',
+  standalone: true,
+  imports: [CommonModule, FormsModule, SharedMaterialModule],
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.scss'
 })
-export class UsersComponent { }
+export class UsersComponent {
+  readonly userService = inject(UserService);
+
+  displayedColumns: string[] = ['name', 'email', 'role', 'department', 'status', 'actions'];
+
+  onSearchChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.userService.setSearchQuery(input.value);
+  }
+
+  deleteUser(id: number): void {
+    this.userService.deleteUser(id);
+  }
+}

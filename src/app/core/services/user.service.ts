@@ -30,6 +30,24 @@ export class UserService {
         this.loadUsers();
     }
 
+    // Computed Signal: Automatically recalculates filtered list when users or filters change
+    readonly filteredUsers = computed(() => {
+        const list = this._users();
+        const { searchQuery, roleFilter, statusFilter } = this._filters();
+
+        return list.filter(user => {
+            const matchesSearch = searchQuery === '' ||
+                `${user.firstName} ${user.lastName} ${user.email}`
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase());
+
+            const matchesRole = roleFilter === 'All' || user.role === roleFilter;
+            const matchesStatus = statusFilter === 'All' || user.status === statusFilter;
+
+            return matchesSearch && matchesRole && matchesStatus;
+        });
+    });
+
     /**
      * Simulates async API fetch with 600ms latency
     */
