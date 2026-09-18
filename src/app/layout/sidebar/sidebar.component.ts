@@ -23,6 +23,8 @@ export class SidebarComponent {
         { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
         { label: 'Users Directory', icon: 'people', route: '/users' },
         { label: 'Profile', icon: 'account_circle', route: '/profile' },
+        { label: 'Tasks & Todo', icon: 'check_circle', route: '/todo' },
+        { label: 'Expenses', icon: 'account_balance_wallet', route: '/expense' },
         { label: 'System Logs', icon: 'list_alt', route: '/logs' }
     ];
 }

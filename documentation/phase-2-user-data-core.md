@@ -27,4 +27,4 @@ src/app/
 ├── environments/
 │   ├── environment.ts                    # Dev environment configuration (http://localhost:8080/api/v1)
 │   └── environment.prod.ts               # Production environment configuration
-└── styles.scss                           # Custom color overrides for Material Snackbar toasts
+└── styles.scss                           # Custom color overrides for Material Snackbar toasts      
