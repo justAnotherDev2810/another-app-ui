@@ -1,4 +1,16 @@
 <div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Users Management</h1>
+            <p class="text-xs text-slate-500 mt-0.5">Manage enterprise platform accounts and roles</p>
+        </div>
+
+        <button mat-flat-button (click)="openAddUserDialog()"
+            class="!bg-cyan-600 hover:!bg-cyan-700 !text-white !rounded-lg !px-4 !py-2.5 shadow-sm flex items-center gap-2">
+            <mat-icon class="!w-5 !h-5 text-base">add</mat-icon>
+            Add User
+        </button>
+    </div>
     <!-- Search Header Controls -->
     <div
         class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">

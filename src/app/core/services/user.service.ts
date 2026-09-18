@@ -1,13 +1,18 @@
-import { computed, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { User, UserFilterState, UserRole, UserStatus } from "../models/user.model";
 import { MOCK_USERS } from "../data/mock-users.data";
 import { of, delay, tap } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { API_ENDPOINTS } from "../constants/api-endpoints.constants";
+import { NotificationService } from "./notification.service";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class UserService {
+    private readonly http = inject(HttpClient);
+    private readonly notification = inject(NotificationService)
     // Primary Reactive State Signals
     private readonly _users = signal<User[]>([]);
     private readonly _loading = signal<boolean>(false);
@@ -53,26 +58,34 @@ export class UserService {
     */
     loadUsers(): void {
         this._loading.set(true);
-        of(MOCK_USERS)
-            .pipe(
-                delay(600),
-                tap(users => {
-                    this._users.set(users);
-                    this._loading.set(false);
-                })
-            )
-            .subscribe();
+        this.http.get<User[]>(API_ENDPOINTS.USERS.BASE).subscribe({
+            next: (users) => {
+                this._users.set(users);
+                this._loading.set(false);
+                this.notification.success(`Users loaded successfully!`);
+            },
+            error: (error) => {
+                console.error(error);
+                this._loading.set(false);
+                this.notification.error(`Failed to load users. Please try again.`);
+            }
+        });
     }
 
-    addUser(user: Omit<User, 'id' | 'createdAt'>): void {
-        let len = this._users().length;
-        let newId = this._users()[len - 1].id + 1; // todo: tempid to be removed
-        const newUser: User = {
-            ...user,
-            id: newId,
-            createdAt: new Date()
-        };
-        this._users.update(current => [newUser, ...current]);
+    addUser(user: User): void {
+        this.http.post<User>(API_ENDPOINTS.USERS.CREATE_USER, user).subscribe({
+            next: (result) => {
+                console.log("Successfully saved user", result);
+                this.loadUsers();
+                this.notification.success(`User "${result.firstName} ${result.lastName}" added successfully!`);
+            },
+            error: (error) => {
+                console.error(error);
+                // 🔴 Error snackbar triggered directly in service
+                const errorMsg = error?.error?.message || 'Failed to create user. Please try again.';
+                this.notification.error(errorMsg);
+            }
+        });
     }
 
     updateUser(id: number, updatedFields: Partial<User>): void {

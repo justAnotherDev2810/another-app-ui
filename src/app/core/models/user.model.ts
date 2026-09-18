@@ -1,11 +1,11 @@
-export type UserRole = 'ADMIN' | 'MANAGER' | 'DEVELOPER' | 'VIEWER';
+export type UserRole = 'ADMIN' | 'MANAGER' | 'DEVELOPER' | 'USER';
 export type UserStatus = 'Active' | 'Inactive' | 'Pending';
 
 export interface User {
     id: number;
     firstName: string;
     lastName: string;
-    userName: string;        // add this — needed for display + future auth
+    username: string;        // add this — needed for display + future auth
     email: string;
     role: UserRole;
     status: UserStatus;
