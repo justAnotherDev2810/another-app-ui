@@ -35,3 +35,55 @@ body {
 }
 
 /* You can add global styles to this file, and also import other style files */
+
+/* Custom Snackbar Notification Styles */
+.mat-mdc-snack-bar-container.snackbar-success {
+  --mdc-snackbar-container-color: #059669 !important;
+  /* emerald-600 */
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #a7f3d0 !important;
+  /* emerald-200 */
+
+  .mdc-snackbar__surface {
+    background-color: #059669 !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+  }
+}
+
+.mat-mdc-snack-bar-container.snackbar-error {
+  --mdc-snackbar-container-color: #dc2626 !important;
+  /* red-600 */
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #fecaca !important;
+  /* red-200 */
+
+  .mdc-snackbar__surface {
+    background-color: #dc2626 !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+  }
+}
+
+.mat-mdc-snack-bar-container.snackbar-warning {
+  --mdc-snackbar-container-color: #d97706 !important;
+  /* amber-600 */
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  --mat-snack-bar-button-color: #fde68a !important;
+  /* amber-200 */
+
+  .mdc-snackbar__surface {
+    background-color: #d97706 !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+  }
+}
