@@ -71,7 +71,7 @@ export class ExpenseService {
 
     // Create new expense
     createExpense(payload: ExpenseRequestDto): Observable<ExpenseResponseDto> {
-        return this.http.post<ExpenseResponseDto>(API_ENDPOINTS.EXPENSES.BASE, payload);
+        return this.http.post<ExpenseResponseDto>(API_ENDPOINTS.EXPENSES.CREATE, payload);
     }
 
     // Simple setter for totals

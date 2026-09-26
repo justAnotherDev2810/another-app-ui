@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
     },
     EXPENSES: {
         BASE: `${BASE_EXPENSE_URL}/all`,
+        CREATE: `${BASE_EXPENSE_URL}/create`,
         TOTAL: `${BASE_EXPENSE_URL}/total`
     }
 } as const;
