@@ -16,7 +16,7 @@
 
 
     <mat-card class="!rounded-2xl !border !border-slate-200/80 !shadow-sm !p-4">
-        <form [formGroup]="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        <form [formGroup]="filterForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
 
 
             <mat-form-field appearance="outline" class="w-full !mb-0">
@@ -30,7 +30,7 @@
             </mat-form-field>
 
 
-            <mat-form-field appearance="outline" class="w-full md:col-span-2 !mb-0">
+            <mat-form-field appearance="outline" class="w-full sm:col-span-2 lg:col-span-2 !mb-0">
                 <mat-label>Date Range (Start - End)</mat-label>
                 <mat-date-range-input [rangePicker]="picker">
                     <input matStartDate formControlName="startDate" placeholder="Start date">
@@ -44,14 +44,14 @@
     </mat-card>
 
 
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
 
         @if (expenseService.loading()) {
         <div class="p-8 text-center text-slate-500 text-sm">
             Loading expense data...
         </div>
         } @else {
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto flex-1">
             <table mat-table [dataSource]="expenseService.expenses()" matSort (matSortChange)="onSortChange($event)" class="w-full">
 
 
@@ -101,13 +101,18 @@
                     </td>
                 </tr>
             </table>
+
+            @if (expenseService.expenses().length === 0) {
+            <div class="p-8 text-center text-slate-500 text-sm">
+                No expenses to display.
+            </div>
+            }
         </div>
 
-        @if (expenseService.expenses().length === 0) {
-        <div class="p-8 text-center text-slate-500 text-sm">
-            No expenses to display.
-        </div>
-        }
+        <mat-paginator [length]="expenseService.totalElements()" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50]"
+            (page)="onPageChange($event)" aria-label="Select page of expenses"
+            class="border-t border-slate-200">
+        </mat-paginator>
         }
     </div>
 

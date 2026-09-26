@@ -24,6 +24,7 @@ export class ExpenseService {
     private readonly _loading = signal<boolean>(false);
     private readonly _totalAmount = signal<number>(0);
     private readonly _totalCount = signal<number>(0);
+    private readonly _totalElements = signal<number>(0);
 
     // Public Readonly Selectors
     readonly categories = this._categories.asReadonly();
@@ -31,6 +32,7 @@ export class ExpenseService {
     readonly loading = this._loading.asReadonly();
     readonly totalAmount = this._totalAmount.asReadonly();
     readonly totalCount = this._totalCount.asReadonly();
+    readonly totalElements = this._totalElements.asReadonly();
 
     constructor() {
         this.loadCategories();
@@ -51,14 +53,25 @@ export class ExpenseService {
         });
     }
 
-    // Load expenses
+    // Load expenses with optional filters (pagination, sort, etc.)
     loadExpenses(filters?: ExpenseFilterParams): void {
         this._loading.set(true);
-        this.http.get<any>(API_ENDPOINTS.EXPENSES.BASE).subscribe({
+        
+        let params = new HttpParams();
+        if (filters) {
+            if (filters.page !== undefined) params = params.set('page', filters.page);
+            if (filters.size !== undefined) params = params.set('size', filters.size);
+            if (filters.sort) params = params.set('sort', filters.sort);
+            if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
+            if (filters.startDate) params = params.set('startDate', filters.startDate);
+            if (filters.endDate) params = params.set('endDate', filters.endDate);
+        }
+
+        this.http.get<any>(API_ENDPOINTS.EXPENSES.BASE, { params }).subscribe({
             next: (res) => {
                 this._expenses.set(res.content || []);
+                this._totalElements.set(res.totalElements || res.content?.length || 0);
                 this._loading.set(false);
-                this.notification.success("Successfully fetched expenses list.")
             },
             error: () => {
                 this._loading.set(false);
@@ -78,7 +91,6 @@ export class ExpenseService {
             next: (res) => {
                 this._totalAmount.set(res.total);
                 this._totalCount.set(res.count);
-                this.notification.success("Successfully fetched expense totals.")
             },
             error: () => {
                 this.notification.error('Failed to fetch expense totals.');

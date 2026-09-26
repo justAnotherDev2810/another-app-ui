@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -30,12 +30,10 @@ export class Expense implements OnInit {
   
   displayedColumns: string[] = ['expenseDate', 'categoryName', 'description', 'amount'];
 
-  // Table State
+  // Table State - Pagination
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
-  sortField = 'expenseDate';
-  sortDirection = 'desc';
 
   // Filter Form
   filterForm: FormGroup = this.fb.group({
@@ -69,19 +67,27 @@ export class Expense implements OnInit {
     return {
       categoryId: val.categoryId || undefined,
       startDate,
-      endDate
+      endDate,
+      page: this.pageIndex,
+      size: this.pageSize
     };
   }
 
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
+    this.expenseService.loadExpenses(this.currentFilterParams);
   }
 
   onSortChange(event: any): void {
     const sort = event as Sort;
-    this.sortField = sort.active || 'expenseDate';
-    this.sortDirection = sort.direction || 'desc';
+    if (sort.direction) {
+      const filterParams: ExpenseFilterParams = {
+        ...this.currentFilterParams,
+        sort: `${sort.active},${sort.direction}`
+      };
+      this.expenseService.loadExpenses(filterParams);
+    }
   }
 
   openAddExpenseDialog(): void {
@@ -93,8 +99,12 @@ export class Expense implements OnInit {
 
     dialogRef.afterClosed().subscribe((created: boolean) => {
       if (created) {
-        // Refetch both expenses and total summary on success
-        this.expenseService.loadExpenses();
+        // Reset to first page and refetch both
+        this.pageIndex = 0;
+        if (this.paginator) {
+          this.paginator.pageIndex = 0;
+        }
+        this.expenseService.loadExpenses(this.currentFilterParams);
         this.expenseService.loadExpenseTotal(this.currentFilterParams);
       }
     });
