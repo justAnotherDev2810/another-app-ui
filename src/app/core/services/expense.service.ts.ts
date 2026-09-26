@@ -26,6 +26,25 @@ export class ExpenseService {
         return this.http.post<ExpenseResponseDto>(API_ENDPOINTS.EXPENSES.BASE, payload);
     }
 
+    getExpenses(filters: ExpenseFilterParams): Observable<ExpenseResponseDto> {
+        let params = new HttpParams();
+        if (filters.page !== undefined) params = params.set('page', filters.page);
+        if (filters.size !== undefined) params = params.set('size', filters.size);
+        if (filters.sort) params = params.set('sort', filters.sort);
+        if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
+        if (filters.startDate) params = params.set('startDate', filters.startDate);
+        if (filters.endDate) params = params.set('endDate', filters.endDate);
+
+        return this.http.get<ExpenseResponseDto>(API_ENDPOINTS.EXPENSES.BASE, { params });
+    }
+
+
+
+    getAllExpenses(): Observable<any> {
+
+        return this.http.get<any>(API_ENDPOINTS.EXPENSES.BASE);
+    }
+
     // get total expense
     getExpenseTotal(filters: ExpenseFilterParams): Observable<ExpenseTotalResponse> {
         let params = new HttpParams();

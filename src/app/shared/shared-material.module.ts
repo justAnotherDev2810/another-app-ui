@@ -13,6 +13,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const MATERIAL_MODULES = [
     MatToolbarModule,
@@ -28,7 +31,10 @@ const MATERIAL_MODULES = [
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
-    MatCardModule
+    MatCardModule,
+    MatPaginatorModule,
+    MatDatepickerModule,
+    MatNativeDateModule
 ];
 
 @NgModule({
