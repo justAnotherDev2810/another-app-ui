@@ -60,7 +60,6 @@ export class Expense implements OnInit {
       next: (res: ExpenseResponseDto[]) => {
         this.dataSource.data = res;
         this.isLoading = false;
-        this.notification.success('Expenses loaded successfully.');
       },
       error: () => {
         this.isLoading = false;

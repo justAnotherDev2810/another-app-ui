@@ -74,6 +74,12 @@ export class ExpenseService {
         return this.http.post<ExpenseResponseDto>(API_ENDPOINTS.EXPENSES.CREATE, payload);
     }
 
+    // Callback to reload expenses (called after expense creation)
+    reloadExpenses(): void {
+        // Emit event or call component's load method
+        // For now, just expose method for component to call
+    }
+
     // Simple setter for totals
     setTotals(total: number, count: number): void {
         this._totalAmount.set(total);
