@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedMaterialModule } from '../../shared/shared-material.module';
-import { Category, ExpenseFilterParams, ExpenseResponseDto } from '../../core/models/expense.model';
+import { ExpenseFilterParams, ExpenseResponseDto } from '../../core/models/expense.model';
 import { ExpenseService } from '../../core/services/expense.service.ts';
 import { NotificationService } from '../../core/services/notification.service';
 import { AddExpenseDialog } from './add-expense-dialog/add-expense-dialog';
@@ -27,67 +27,68 @@ export class Expense implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly notification = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
-  
+
   displayedColumns: string[] = ['expenseDate', 'categoryName', 'description', 'amount'];
+  dataSource = new MatTableDataSource<ExpenseResponseDto>([]);
+  isLoading = false;
 
-  // Table State - Pagination
-  totalElements = 0;
-  pageSize = 10;
-  pageIndex = 0;
-
-  // Filter Form
   filterForm: FormGroup = this.fb.group({
     categoryId: [''],
     startDate: [null],
     endDate: [null]
   });
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(): void {
-    this.expenseService.loadExpenses();
-    this.expenseService.loadExpenseTotal(this.currentFilterParams);
+    this.loadExpenses();
 
-    // Listen to Filter Bar changes -> reset page to 0 and refetch both
     this.filterForm.valueChanges.subscribe(() => {
-      this.pageIndex = 0;
-      if (this.paginator) {
-        this.paginator.pageIndex = 0;
-      }
-      this.expenseService.loadExpenses();
-      this.expenseService.loadExpenseTotal(this.currentFilterParams);
+      this.loadExpenses();
     });
   }
 
-  get currentFilterParams(): ExpenseFilterParams {
-    const val = this.filterForm.value;
-    const startDate = val.startDate ? new Date(val.startDate).toISOString().split('T')[0] : undefined;
-    const endDate = val.endDate ? new Date(val.endDate).toISOString().split('T')[0] : undefined;
-
-    return {
-      categoryId: val.categoryId || undefined,
-      startDate,
-      endDate,
-      page: this.pageIndex,
-      size: this.pageSize
+  loadExpenses(): void {
+    this.isLoading = true;
+    const filters: ExpenseFilterParams = {
+      categoryId: this.filterForm.get('categoryId')?.value || undefined,
+      startDate: this.formatDate(this.filterForm.get('startDate')?.value),
+      endDate: this.formatDate(this.filterForm.get('endDate')?.value)
     };
+
+    this.expenseService.getExpenses(filters).subscribe({
+      next: (res: ExpenseResponseDto[]) => {
+        this.dataSource.data = res;
+        this.isLoading = false;
+        this.notification.success('Expenses loaded successfully.');
+      },
+      error: () => {
+        this.isLoading = false;
+        this.notification.error('Failed to load expenses.');
+      }
+    });
+
+    this.loadTotal(filters);
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.expenseService.loadExpenses(this.currentFilterParams);
+  loadTotal(filters: ExpenseFilterParams): void {
+    this.expenseService.getExpenseTotal(filters).subscribe({
+      next: (res: any) => {
+        this.expenseService.setTotals(res.total, res.count);
+      },
+      error: () => {
+        this.notification.error('Failed to load totals.');
+      }
+    });
   }
 
-  onSortChange(event: any): void {
-    const sort = event as Sort;
-    if (sort.direction) {
-      const filterParams: ExpenseFilterParams = {
-        ...this.currentFilterParams,
-        sort: `${sort.active},${sort.direction}`
-      };
-      this.expenseService.loadExpenses(filterParams);
-    }
+  private formatDate(date: any): string | undefined {
+    if (!date) return undefined;
+    return new Date(date).toISOString().split('T')[0];
+  }
+
+  onSortChange(event: Sort): void {
+    // Sorting can be added later
   }
 
   openAddExpenseDialog(): void {
@@ -99,13 +100,7 @@ export class Expense implements OnInit {
 
     dialogRef.afterClosed().subscribe((created: boolean) => {
       if (created) {
-        // Reset to first page and refetch both
-        this.pageIndex = 0;
-        if (this.paginator) {
-          this.paginator.pageIndex = 0;
-        }
-        this.expenseService.loadExpenses(this.currentFilterParams);
-        this.expenseService.loadExpenseTotal(this.currentFilterParams);
+        this.loadExpenses();
       }
     });
   }
