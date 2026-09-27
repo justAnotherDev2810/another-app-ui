@@ -50,11 +50,19 @@ export class ExpenseService {
     }
 
     // Get expenses as Observable list
-    getExpenses(filters: ExpenseFilterParams): Observable<ExpenseResponseDto[]> {
+    getFilteredExpenses(filters: ExpenseFilterParams): Observable<ExpenseResponseDto[]> {
         let params = new HttpParams();
         if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
         if (filters.startDate) params = params.set('startDate', filters.startDate);
         if (filters.endDate) params = params.set('endDate', filters.endDate);
+
+        return this.http.get<ExpenseResponseDto[]>(API_ENDPOINTS.EXPENSES.BASE, { params });
+    }
+
+    
+    // Get expenses as Observable list
+    getAllExpenses(): Observable<ExpenseResponseDto[]> {
+        let params = new HttpParams();
 
         return this.http.get<ExpenseResponseDto[]>(API_ENDPOINTS.EXPENSES.BASE, { params });
     }

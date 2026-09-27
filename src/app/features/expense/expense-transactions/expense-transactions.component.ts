@@ -42,14 +42,34 @@ export class ExpenseTransactionsComponent implements OnInit {
     @ViewChild(MatSort) sort!: MatSort;
 
     ngOnInit(): void {
+        // Load initial data on page load
         this.loadExpenses();
+    }
 
+    ngAfterViewInit(): void {
         this.filterForm.valueChanges.subscribe(() => {
-            this.loadExpenses();
+            this.loadFilteredExpenses();
         });
     }
 
-    loadExpenses(): void {
+    loadExpenses(){
+        this.isLoading = true;
+        this.expenseService.getAllExpenses().subscribe({
+            next: (res: ExpenseResponseDto[]) => {
+                this.dataSource.data = res;
+                this.isLoading = false;
+                this.notification.success("Loaded all expenses");
+            },
+            error: () => {
+                this.isLoading = false;
+                this.notification.error('Failed to load expenses.');
+            }
+        });
+
+        this.loadTotal({});
+    }
+
+    loadFilteredExpenses(): void {
         this.isLoading = true;
         const filters: ExpenseFilterParams = {
             categoryId: this.filterForm.get('categoryId')?.value || undefined,
@@ -57,7 +77,7 @@ export class ExpenseTransactionsComponent implements OnInit {
             endDate: this.formatDate(this.filterForm.get('endDate')?.value)
         };
 
-        this.expenseService.getExpenses(filters).subscribe({
+        this.expenseService.getFilteredExpenses(filters).subscribe({
             next: (res: ExpenseResponseDto[]) => {
                 const searchTerm = this.filterForm.get('search')?.value?.toLowerCase().trim();
                 if (searchTerm) {
