@@ -1,98 +1,49 @@
 <div class="space-y-6">
 
+
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Expenses Ledger</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Track, filter, and record organizational operational expenses</p>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Financial Overview</h1>
+            <p class="text-xs text-slate-500 mt-0.5">Real-time financial insights to help you make informed
+                decisions</p>
         </div>
+    </div>
 
-        <button mat-flat-button (click)="openAddExpenseDialog()"
-            class="!bg-cyan-600 hover:!bg-cyan-700 !text-white !rounded-lg !px-4 !py-2.5 shadow-sm flex items-center gap-2">
-            <mat-icon class="!w-5 !h-5 text-base">add</mat-icon>
-            Add Expense
+
+    <div class="flex items-center gap-2 border-b border-slate-200/80 pb-2">
+        <button (click)="setActiveTab('dashboard')" [class]="activeTab === 'dashboard'
+? 'bg-slate-900 text-white font-medium text-xs px-4 py-2 rounded-xl transition-all shadow-sm'
+: 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-xs px-4 py-2 rounded-xl
+transition-all'">
+            Dashboard
+        </button>
+
+        <button (click)="setActiveTab('transactions')" [class]="activeTab === 'transactions'
+? 'bg-slate-900 text-white font-medium text-xs px-4 py-2 rounded-xl transition-all shadow-sm'
+: 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-xs px-4 py-2 rounded-xl
+transition-all'">
+            Transactions
+        </button>
+
+        <button (click)="setActiveTab('analytics')" [class]="activeTab === 'analytics'
+? 'bg-slate-900 text-white font-medium text-xs px-4 py-2 rounded-xl transition-all shadow-sm'
+: 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-xs px-4 py-2 rounded-xl
+transition-all'">
+            Analytics
         </button>
     </div>
 
-    <mat-card class="!rounded-2xl !border !border-slate-200/80 !shadow-sm !p-4">
-        <form [formGroup]="filterForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
 
-            <mat-form-field appearance="outline" class="w-full !mb-0">
-                <mat-label>Category</mat-label>
-                <mat-select formControlName="categoryId">
-                    <mat-option value="">All Categories</mat-option>
-                    @for (cat of expenseService.categories(); track cat.id) {
-                    <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-full sm:col-span-2 lg:col-span-2 !mb-0">
-                <mat-label>Date Range (Start - End)</mat-label>
-                <mat-date-range-input [rangePicker]="picker">
-                    <input matStartDate formControlName="startDate" placeholder="Start date">
-                    <input matEndDate formControlName="endDate" placeholder="End date">
-                </mat-date-range-input>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-
-        </form>
-    </mat-card>
-
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
-
-        @if (isLoading) {
-        <div class="p-8 text-center text-slate-500 text-sm">
-            Loading expense data...
-        </div>
-        } @else {
-        <div class="overflow-x-auto flex-1">
-            <table mat-table [dataSource]="dataSource" class="w-full">
-
-                <ng-container matColumnDef="expenseDate">
-                    <th mat-header-cell *matHeaderCellDef class="!font-bold !text-slate-700"> Date </th>
-                    <td mat-cell *matCellDef="let element" class="text-slate-600">
-                        {{ element.expenseDate | date:'mediumDate' }}
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="categoryName">
-                    <th mat-header-cell *matHeaderCellDef class="!font-bold !text-slate-700"> Category </th>
-                    <td mat-cell *matCellDef="let element">
-                        <span class="inline-block bg-slate-100 text-slate-700 text-xs font-semibold px-2.5 py-1 rounded-md">
-                            {{ element.categoryName }}
-                        </span>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="description">
-                    <th mat-header-cell *matHeaderCellDef class="!font-bold !text-slate-700"> Description </th>
-                    <td mat-cell *matCellDef="let element" class="text-slate-600 max-w-xs truncate">
-                        {{ element.description || '-' }}
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="amount">
-                    <th mat-header-cell *matHeaderCellDef class="!font-bold !text-slate-700"> Amount </th>
-                    <td mat-cell *matCellDef="let element" class="font-bold text-slate-800">
-                        {{ element.amount | currency:'USD':'symbol':'1.2-2' }}
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-slate-50/80"></tr>
-
-                <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell text-center py-8 text-slate-400" [attr.colspan]="displayedColumns.length">
-                        No expense records found.
-                    </td>
-                </tr>
-            </table>
-        </div>
-        }
-    </div>
-
-    <app-expense-total-summary [totalAmount]="expenseService.totalAmount()" [totalCount]="expenseService.totalCount()">
-    </app-expense-total-summary>
+    @switch (activeTab) {
+    @case ('dashboard') {
+    <app-expense-dashboard></app-expense-dashboard>
+    }
+    @case ('transactions') {
+    <app-expense-transactions></app-expense-transactions>
+    }
+    @case ('analytics') {
+    <app-expense-analytics></app-expense-analytics>
+    }
+    }
 
 </div>
