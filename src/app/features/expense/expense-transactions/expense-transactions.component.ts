@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -27,6 +27,7 @@ export class ExpenseTransactionsComponent implements OnInit {
     private readonly dialog = inject(MatDialog);
     private readonly notification = inject(NotificationService);
     private readonly fb = inject(FormBuilder);
+    private readonly cdr = inject(ChangeDetectorRef);
 
     displayedColumns: string[] = ['categoryName', 'description', 'expenseDate', 'amount'];
     dataSource = new MatTableDataSource<ExpenseResponseDto>([]);
@@ -52,13 +53,14 @@ export class ExpenseTransactionsComponent implements OnInit {
         });
     }
 
-    loadExpenses(){
+    loadExpenses() {
         this.isLoading = true;
         this.expenseService.getAllExpenses().subscribe({
             next: (res: ExpenseResponseDto[]) => {
                 this.dataSource.data = res;
                 this.isLoading = false;
                 this.notification.success("Loaded all expenses");
+                this.cdr.markForCheck();
             },
             error: () => {
                 this.isLoading = false;
@@ -89,6 +91,7 @@ export class ExpenseTransactionsComponent implements OnInit {
                     this.dataSource.data = res;
                 }
                 this.isLoading = false;
+                this.cdr.markForCheck();
             },
             error: () => {
                 this.isLoading = false;
